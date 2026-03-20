@@ -9,6 +9,11 @@
     "lint": "eslint .",
     "lint-fix": "eslint . --fix"
   },
+  "engines": {
+    "node": ">=22.14.0",
+    "npm": ">=10.9.2"
+  },
+  "type": "module",
   "author": "JAYDIP PIPALIYA",
   "license": "MIT",
   "description": "",

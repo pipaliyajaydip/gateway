@@ -1,26 +1,32 @@
-/*
+import express, { Router } from 'express';
+import cluster from 'cluster';
+import os from 'os';
+import cookieParser from 'cookie-parser';
 
-"dependencies": {
-    "express": "^5.2.1",
-    "dotenv": "^16.5.0",
-    "jsonwebtoken": "^9.0.2",
-    "cookie-parser": "^1.4.7",
-    "uuid": "^11.1.0",
-    "http-proxy-middleware": "^3.0.0",
-    "axios": "^1.6.0",
-    "express-rate-limit": "^7.0.0",
-    "rate-limit-redis": "^3.0.0",
-    "ioredis": "^5.3.2",
-    "helmet": "^7.0.0",
-    "cors": "^2.8.5",
-    "morgan": "^1.10.0",
-    "opossum": "^8.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9",
-    "eslint": "^9.37.0",
-    "eslint-plugin-n": "^17.23.1",
-    "cross-env": "^7.0.3"
+const app = express();
+
+const noOfCPU = os.availableParallelism ? os.availableParallelism : os.cpus().length;
+
+if (cluster.isPrimary) {
+  for (let i = 0; i < noOfCPU; i++) {
+    cluster.fork();
   }
+  cluster.on('exit', (Worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} exited. Code: ${code}, Signal: ${signal}`);
+    cluster.fork();
+  });
+} else {
+  console.log(`CPU: Worker ${process.pid}, PORT: ${PORT}`);
+  app.use(express.json());
+  app.use(cookieParser());
 
-*/
+
+  app.listen(5001, () => {
+    console.log(`Worker ${process.pid} running on port ${PORT}`);
+  });
+
+  process.on('uncaughtException', (err) => {
+    console.error(`Worker ${process.pid} - Uncaught Exception: ${err.message}`);
+    process.exit(1);
+  });
+}
