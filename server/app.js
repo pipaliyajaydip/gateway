@@ -2,14 +2,16 @@ import express from 'express';
 import cluster from 'cluster';
 import os from 'os';
 import cookieParser from 'cookie-parser';
-import { PORT } from './config/env';
+import { PORT } from './config/env.js';
+import router from './routes/route.js';
 
 const app = express();
+app.disable('x-powered-by');
 
-const noOfCPU = os.availableParallelism ? os.availableParallelism : os.cpus().length;
+const numCPUs = os.availableParallelism ? os.availableParallelism : os.cpus().length;
 
 if (cluster.isPrimary) {
-  for (let i = 0; i < noOfCPU; i++) {
+  for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
   cluster.on('exit', (worker, code, signal) => {
@@ -20,8 +22,9 @@ if (cluster.isPrimary) {
   console.log(`CPU: Worker ${process.pid}, PORT: ${PORT}`);
   app.use(express.json());
   app.use(cookieParser());
+  app.use('/api', router);
 
-  app.listen(5001, () => {
+  app.listen(PORT, () => {
     console.log(`Worker ${process.pid} running on port ${PORT}`);
   });
 
