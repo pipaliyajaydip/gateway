@@ -1,5 +1,6 @@
 import express from 'express';
 import cluster from 'cluster';
+import helmet from 'helmet';
 import os from 'os';
 import cookieParser from 'cookie-parser';
 import { PORT } from './config/env.js';
@@ -22,6 +23,7 @@ if (cluster.isPrimary) {
   console.log(`CPU: Worker ${process.pid}, PORT: ${PORT}`);
   app.use(express.json());
   app.use(cookieParser());
+  app.use(helmet());
   app.use('/api', router);
 
   app.listen(PORT, () => {
