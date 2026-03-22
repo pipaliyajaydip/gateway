@@ -20,6 +20,9 @@ export const REDIS_PORT = process.env.REDIS_PORT;
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const REDIS_DB = process.env.REDIS_DB;
 
+export const RATE_LIMIT_WINDOW_MS = process.env.RATE_LIMIT_WINDOW_MS;
+export const RATE_LIMIT_MAX_REQUEST = process.env.RATE_LIMIT_MAX_REQUEST;
+
 export const USER_SERVICE = process.env.USER_SERVICE;
 
 export const JWT_SECRET = process.env.JWT_SECRET;
