@@ -5,7 +5,7 @@ import os from 'os';
 import cookieParser from 'cookie-parser';
 import { PORT } from './config/env.js';
 import router from './routes/route.js';
-import { globalRateLimier } from './middleware/rateLimiter.js';
+import { globalRateLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -25,7 +25,7 @@ if (cluster.isPrimary) {
   app.use(helmet());
   app.use(express.json());
   app.use(cookieParser());
-  app.use(globalRateLimier);
+  app.use(globalRateLimiter);
   app.use('/api', router);
 
   app.listen(PORT, () => {

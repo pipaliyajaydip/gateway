@@ -17,4 +17,12 @@ redis.on('connect', () => {
     console.log('Redis connected successfully.')
 });
 
+redis.on('ready', () => {
+    console.log('Redis is ready to use.');
+});
+
+redis.on('close', () => {
+    console.log('Redis connection closed.');
+});
+
 export default redis;

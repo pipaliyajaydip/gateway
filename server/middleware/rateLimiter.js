@@ -1,17 +1,23 @@
 import rateLimit from "express-rate-limit";
-import RediStore from 'rate-limit-redis';
+import RedisStore from 'rate-limit-redis';
 import redis from "../config/redis.client.js";
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUEST } from "../config/env.js";
 
-export const globalRateLimier = rateLimit({
-    store: new RediStore({
-        client: redis,
+
+export const globalRateLimiter = rateLimit({
+    store: new RedisStore({
+        sendCommand: (...args) => {
+            console.log("Redis store, send cmd: ", args);
+            return redis.call(...args);
+        }
     }),
     windowMs: RATE_LIMIT_WINDOW_MS,
     max: RATE_LIMIT_MAX_REQUEST,
+    keyGenerator: (req) => req.ip,
     message: {
-        error: 'Too many request, please try again later.',
+        error: 'Too many requests, please try again later.',
     },
+    statusCode: 429,
     standardHeaders: true,
     legacyHeaders: false,
-});
+}); 
