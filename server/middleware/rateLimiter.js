@@ -13,7 +13,11 @@ export const globalRateLimiter = rateLimit({
     }),
     windowMs: RATE_LIMIT_WINDOW_MS,
     max: RATE_LIMIT_MAX_REQUEST,
-    keyGenerator: (req) => req.ip,
+    keyGenerator: (req) => {
+        const ip = req.headers['x-forwarded-for'] || req.ip;
+        console.log('req.ip: ', ip);
+        return ip;
+    },
     message: {
         error: 'Too many requests, please try again later.',
     },

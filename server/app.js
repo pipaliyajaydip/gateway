@@ -25,6 +25,7 @@ if (cluster.isPrimary) {
   app.use(helmet());
   app.use(express.json());
   app.use(cookieParser());
+  app.set('trust proxy', 'loopback, 10.0.0.0/8'); // trust LB & internal proxies only
   app.use(globalRateLimiter);
   app.use('/api', router);
 
