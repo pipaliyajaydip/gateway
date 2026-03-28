@@ -343,54 +343,6 @@ docker-compose down
 4. **Secrets Management**: Use Docker secrets or external secret managers (Vault, K8s secrets)
 5. **Environment Variables**: Load from secure configuration systems
 
-### Kubernetes Deployment Example
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api-gateway
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: api-gateway
-  template:
-    metadata:
-      labels:
-        app: api-gateway
-    spec:
-      containers:
-      - name: api-gateway
-        image: api-gateway:latest
-        ports:
-        - containerPort: 5001
-        env:
-        - name: REDIS_HOST
-          value: redis-service
-        - name: PORT
-          value: "5001"
-        livenessProbe:
-          httpGet:
-            path: /api/health/ping
-            port: 5001
-          initialDelaySeconds: 10
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /api/health/ping
-            port: 5001
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-```
-
 ## Middleware & Security
 
 ### Request Processing Pipeline
