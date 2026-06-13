@@ -1,7 +1,7 @@
 export const pingTest = (req, res, next) => {
     try {
         res.status(200).json({
-            msg: "API is up and runnig",
+            msg: "API Gateway is up and runnig",
             processId: process.pid,
         });
     } catch (err) {
