@@ -26,6 +26,10 @@ if (cluster.isPrimary) {
   app.use(express.json());
   app.use(cookieParser());
   app.set('trust proxy', 'loopback, 10.0.0.0/8'); // trust LB & internal proxies only
+  app.use((req, res, next) => {
+    console.log('Gateway received:', req.method, req.originalUrl);
+    next();
+  });
   app.use(globalRateLimiter);
   app.use('/api', router);
 
