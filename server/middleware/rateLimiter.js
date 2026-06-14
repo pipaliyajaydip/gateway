@@ -3,6 +3,14 @@ import RedisStore from 'rate-limit-redis';
 import redis from "../config/redis.client.js";
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUEST } from "../config/env.js";
 
+const getClientIp = (req) => {
+    const forwarded = req.headers['x-forwarded-for'];
+    if (forwarded) {
+        return forwarded.split(',')[0].trim();
+    }
+    
+    return req.ip || req.socket.remoteAddress || 'unknown';
+};
 
 export const globalRateLimiter = rateLimit({
     store: new RedisStore({
@@ -14,8 +22,8 @@ export const globalRateLimiter = rateLimit({
     windowMs: RATE_LIMIT_WINDOW_MS,
     max: RATE_LIMIT_MAX_REQUEST,
     keyGenerator: (req) => {
-        const ip = req.headers['x-forwarded-for'] || req.ip;
-        console.log('req.ip: ', ip);
+        const ip = getClientIp(req);
+        console.log('Client IP: ', ip);
         return ip;
     },
     message: {
@@ -24,4 +32,7 @@ export const globalRateLimiter = rateLimit({
     statusCode: 429,
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => {
+        return req.path === '/health';
+    }
 }); 
