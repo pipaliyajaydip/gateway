@@ -45,6 +45,9 @@ console.log("USER_SERVICE: ", USER_SERVICE);
 router.use('/auth', createProxyMiddleware({
     target: USER_SERVICE,
     changeOrigin: true,
+    pathRewrite: {
+      '^/auth': '/api/auth'
+    },
     on: {
         proxyReq: (proxyReq, req) => {
           console.log('ProxyReq:', req.method, req.originalUrl);
